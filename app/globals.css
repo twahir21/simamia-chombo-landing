@@ -1,48 +1,121 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
-/* Brand colours match the mobile app (clients/mobile/tailwind.config.js). */
+/*
+ * Simamia Chombo design tokens.
+ * Primary teal matches the mobile app (clients/mobile/tailwind.config.js).
+ * Buttons use brand-dark for white-text contrast (WCAG AA); brand is for
+ * accents, large type and graphics.
+ */
 @theme inline {
   --color-brand: #0f9d8a;
-  --color-brand-dark: #0a6b5e;
-  --color-brand-deep: #074b42;
-  --color-brand-ink: #0b1f1c;
-  --color-brand-light: #e6f6f4;
-  --color-brand-mint: #83f6e0;
-  --color-paper: #f7f4ec;
-  --color-paper-line: #e3dccb;
-  --color-ink: #121c2a;
-  --color-surface: #f8fafb;
-  --color-late: #b45309;
-  --color-late-light: #fef3c7;
-  --color-risk: #ba1a1a;
-  --color-risk-light: #ffdad6;
-  --color-ok: #006b2c;
-  --color-ok-light: #d1fae5;
+  --color-brand-dark: #087d6d;
+  --color-brand-deeper: #066557;
+  --color-brand-light: #e7f6f3;
+  --color-brand-mint: #7ee8d4;
+  --color-night: #0b1d1a;
+  --color-night-2: #112925;
+  --color-canvas: #ffffff;
+  --color-canvas-2: #f7faf9;
+  --color-ink: #152521;
+  --color-muted: #66756f;
+  --color-line: #e3ebe8;
+  --color-paper: #faf6ec;
+  --color-paper-line: #e6dcc6;
+
+  /* Customer status colours */
+  --color-ok: #11683a;
+  --color-ok-bg: #e3f5ea;
+  --color-late: #995a0b;
+  --color-late-bg: #fdf1dc;
+  --color-unpaid: #b42318;
+  --color-unpaid-bg: #fde7e4;
+  --color-risk: #b42318;
+
   --font-display: var(--font-bricolage);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-hand: var(--font-caveat);
+
+  --shadow-card: 0 1px 2px rgb(21 37 33 / 0.04), 0 8px 24px -12px rgb(21 37 33 / 0.12);
+  --shadow-float: 0 2px 6px rgb(21 37 33 / 0.06), 0 24px 60px -20px rgb(8 125 109 / 0.35);
 }
 
 html {
-  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: #ffffff;
+  background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: clip;
 }
 
-/* Ruled notebook paper, used for the "daftari" comparison card. */
+::selection {
+  background: var(--color-brand-light);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Faint grid used behind the hero. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(21 37 33 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(21 37 33 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+}
+
+/* Ruled notebook paper for the "daftari" card. */
 .ruled {
   background-color: var(--color-paper);
   background-image:
-    linear-gradient(90deg, transparent 2.75rem, #e9a3a3 2.75rem, #e9a3a3 calc(2.75rem + 1px), transparent calc(2.75rem + 1px)),
-    repeating-linear-gradient(to bottom, transparent 0, transparent calc(2rem - 1px), var(--color-paper-line) calc(2rem - 1px), var(--color-paper-line) 2rem);
+    linear-gradient(90deg, transparent 2.5rem, #e7a3a0 2.5rem, #e7a3a0 calc(2.5rem + 1px), transparent calc(2.5rem + 1px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(2.25rem - 1px), var(--color-paper-line) calc(2.25rem - 1px), var(--color-paper-line) 2.25rem);
+  background-position: 0 1.1rem;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Animation bootstrap. An inline script in layout.tsx adds `fx` to <html>
+ * when the user allows motion, so hero elements start hidden and GSAP
+ * reveals them without a flash. If scripts fail, the fallback keyframe
+ * shows them after 2.5s.
+ */
+.fx [data-hero-item] {
+  visibility: hidden;
+  animation: fx-fallback 0s linear 2.5s forwards;
+}
+@keyframes fx-fallback {
+  to {
+    visibility: visible;
+  }
+}
+
+/* On desktop with motion, the status track is pinned and moved by GSAP. */
+@media (min-width: 1024px) {
+  .fx [data-hwrap] {
+    overflow: visible;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
